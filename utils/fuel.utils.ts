@@ -61,12 +61,12 @@ export class FuelUtils {
 
             console.log('Bought Fuel Successfully! Amount of fuel bought: ' + emptyFuelCapacity + ' Litres');
         }
-        else if(curHolding < 2000000 && curFuelPrice < 1250) {
+        else if(curHolding < 1000000 && curFuelPrice < 700) {
             const emptyFuelCapacity = (await this.page.locator('#remCapacity').innerText()).replaceAll(',', '');
 
             await this.page.getByPlaceholder('Amount to purchase').click();
             await this.page.getByPlaceholder('Amount to purchase').press('Control+a');
-            await this.page.getByPlaceholder('Amount to purchase').fill('2000000');
+            await this.page.getByPlaceholder('Amount to purchase').fill('200000');
             await this.page.getByRole('button', { name: ' Purchase' }).click();
 
             console.log('Bought Fuel Successfully! Amount of fuel bought: 2000000 Litres');
@@ -115,7 +115,7 @@ export class FuelUtils {
 
             console.log('Bought Co2 Successfully! Amount of co2 bought: ' + emptyCo2Capacity);
         }
-        else if(curHolding < 1000000 && curCo2Price < 180) {
+        else if(curHolding < 1000000 && curCo2Price < 120) {
             await this.page.getByPlaceholder('Amount to purchase').click();
             await this.page.getByPlaceholder('Amount to purchase').press('Control+a');
             await this.page.getByPlaceholder('Amount to purchase').fill('1000000');
