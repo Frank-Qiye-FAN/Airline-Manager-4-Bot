@@ -59,6 +59,9 @@ test('All Operations', async ({ page }) => {
     await GeneralUtils.sleep(2500);
 
     const hasMore = await fleetUtils.departOnce();
+
+    await page.locator('#popup > .modal-dialog > .modal-content > .modal-header > div > .glyphicons').click();
+
     if (!hasMore) {
       console.log('No more planes to depart. Stopping cycle early.');
       break;
