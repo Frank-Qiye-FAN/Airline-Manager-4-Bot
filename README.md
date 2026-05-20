@@ -1,3 +1,25 @@
+# What is changed
+Fleet. utilities. ts - Add departOnce() method:
+
+Click the # departAll button once (take off a batch of up to 20 aircraft)
+Return boolean: true indicates there are more planes available for takeoff, false indicates there are no more planes or an error has occurred
+The original departPlanes() method remains unchanged
+AirlineManagerial. spec.ts - Refactoring the main process:
+
+Change the original "buy all the fuel at once+buy all the CO2 at once → then take off in a cycle" to:
+
+For up to 10 rounds:
+1. Open the fuel panel → buyFuel()
+2. Switch to CO2 tag → buyCo2()
+3. Close the panel
+4. Open the route panel → departOnce() to take off a batch
+5. If there are no more planes to take off, end the cycle early
+Campaign and Maintenance operations are moved to before the loop and are not affected
+# Why did you make this change
+Each round of takeoff for 20 aircraft consumes fuel and CO2. Before the next round of takeoff, it is necessary to purchase and replenish inventory, so that even if the inventory capacity is small, all aircraft can be sent into the sky through multiple rounds of circulation. 10 rounds x 20 aircraft=maximum of 200 aircraft, if the number of aircraft is less than 200, it will break early.
+
+
+
 # Airline-Manager-4-Bot
 
 This repository contains a bot for Airline Manager 4, built with Playwright and scheduled to run on GitHub Actions. The bot is designed to run every hour at 01 and 31 minutes but the schedule can be changed according to preference.
