@@ -21,17 +21,6 @@ test('All Operations', async ({ page }) => {
   // Login //
   await generalUtils.login(page);
 
-  // Fuel Operations //
-  await page.locator('#mapMaint > img').first().click();
-  await fuelUtils.buyFuel();
-
-  await page.getByRole('button', { name: ' Co2' }).click();
-  await GeneralUtils.sleep(1000);
-  await fuelUtils.buyCo2();
-
-  await page.locator('#popup > .modal-dialog > .modal-content > .modal-header > div > .glyphicons').click();
-  // End //
-
   // Campaign Operations //
   await page.locator('div:nth-child(5) > #mapMaint > img').click();
   await campaignUtils.createCampaign();
@@ -42,7 +31,7 @@ test('All Operations', async ({ page }) => {
 
   // Repair Planes if needed //
   await page.locator('div:nth-child(4) > #mapMaint > img').click();
-  
+
   await maintenanceUtils.checkPlanes();
   await GeneralUtils.sleep(1000);
   await maintenanceUtils.repairPlanes();
@@ -51,11 +40,30 @@ test('All Operations', async ({ page }) => {
   await page.locator('#popup > .modal-dialog > .modal-content > .modal-header > div > .glyphicons').click();
   // End //
 
-  // Depart Planes Operations //
-  await page.locator('#mapRoutes').getByRole('img').click();
-  await GeneralUtils.sleep(2500);
+  // Fuel + Depart Cycle: buy fuel/CO2 then depart one batch, repeat up to 10 times //
+  for (let i = 0; i < 10; i++) {
+    console.log(`Cycle ${i + 1}/10: Buying fuel and CO2...`);
 
-  await fleetUtils.departPlanes();
+    await page.locator('#mapMaint > img').first().click();
+    await fuelUtils.buyFuel();
+
+    await page.getByRole('button', { name: ' Co2' }).click();
+    await GeneralUtils.sleep(1000);
+    await fuelUtils.buyCo2();
+
+    await page.locator('#popup > .modal-dialog > .modal-content > .modal-header > div > .glyphicons').click();
+
+    console.log(`Cycle ${i + 1}/10: Departing one batch...`);
+
+    await page.locator('#mapRoutes').getByRole('img').click();
+    await GeneralUtils.sleep(2500);
+
+    const hasMore = await fleetUtils.departOnce();
+    if (!hasMore) {
+      console.log('No more planes to depart. Stopping cycle early.');
+      break;
+    }
+  }
   // End //
 
   page.close();

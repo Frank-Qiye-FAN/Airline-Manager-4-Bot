@@ -12,26 +12,46 @@ export class FleetUtils {
         this.maxTry = 8; // TODO: Find another way 
     }
 
+    public async departOnce(): Promise<boolean> {
+        const departAllVisible = await this.page.locator('#departAll').isVisible();
+        if (!departAllVisible) {
+            return false;
+        }
+
+        console.log('Departing one batch (20 or less)...');
+
+        await this.page.locator('#departAll').click();
+        await GeneralUtils.sleep(1500);
+
+        const cantDepartPlane = await this.page.getByText('×Unable to departSome A/C was').isVisible();
+        if (cantDepartPlane) {
+            return false;
+        }
+
+        console.log('Departed one batch successfully.');
+        return this.page.locator('#departAll').isVisible();
+    }
+
     public async departPlanes() {
         let departAllVisible = await this.page.locator('#departAll').isVisible();
         console.log('Looking if there are any planes to be departed...')
 
-        let count = 0; 
+        let count = 0;
         while(departAllVisible && count < this.maxTry) {
             console.log('Departing 20 or less...');
 
             let departAll = await this.page.locator('#departAll');
-            
+
             await departAll.click();
             await GeneralUtils.sleep(1500);
-            
+
             const cantDepartPlane = await this.page.getByText('×Unable to departSome A/C was').isVisible();
             if(cantDepartPlane)
                 break;
 
             departAllVisible = await this.page.locator('#departAll').isVisible();
             count++;
-        
+
             console.log('Departed 20 or less planes...')
         }
     }
