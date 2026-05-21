@@ -61,7 +61,7 @@ export class FuelUtils {
 
             console.log('Bought Fuel Successfully! Amount of fuel bought: ' + emptyFuelCapacity + ' Litres');
         }
-        else if(curHolding < 1000000 && curFuelPrice < 1000) {
+        else if(curHolding < 2000000 && curFuelPrice < 2500) {
             const emptyFuelCapacity = (await this.page.locator('#remCapacity').innerText()).replaceAll(',', '');
 
             await this.page.getByPlaceholder('Amount to purchase').click();
